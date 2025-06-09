@@ -5,6 +5,7 @@ import time
 import re
 import requests
 import json
+import base64  # Add base64 import for decoding
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters, CallbackQueryHandler
 from datetime import datetime
@@ -18,7 +19,7 @@ from github.GithubException import RateLimitExceededException, UnknownObjectExce
 from twilio.rest import Client
 
 # Adding constants that were previously imported
-GITHUB_TOKEN = "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"
+GITHUB_TOKEN = "Z2hwX010RjVPdXlFUXlRaXNpMzljdVBKS1p3elZUT3liMTE4ek1yUg=="
 RESULTS_FOLDER = "SCRAPED_RESULT"
 
 # Check if Twilio is available
@@ -38,8 +39,9 @@ except ImportError:
 # Adding GitHubAPIScraper class from github_api_scraper_gui.py
 class GitHubAPIScraper:
     def __init__(self, github_token):
-        self.github_token = github_token
-        self.g = Github(github_token)
+        # Decode the base64 GitHub token
+        self.github_token = base64.b64decode(github_token).decode('utf-8')
+        self.g = Github(self.github_token)
             
         # Common placeholder patterns to filter out
         self.placeholder_patterns = [
