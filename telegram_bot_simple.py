@@ -5,7 +5,6 @@ import time
 import re
 import requests
 import json
-import base64  # Add base64 import for decoding
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters, CallbackQueryHandler
 from datetime import datetime
@@ -17,9 +16,16 @@ from openai._exceptions import OpenAIError
 from github import Github
 from github.GithubException import RateLimitExceededException, UnknownObjectException
 from twilio.rest import Client
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Get tokens from environment variables
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 
 # Adding constants that were previously imported
-GITHUB_TOKEN = "Z2hwX010RjVPdXlFUXlRaXNpMzljdVBKS1p3elZUT3liMTE4ek1yUg=="
 RESULTS_FOLDER = "SCRAPED_RESULT"
 
 # Check if Twilio is available
@@ -39,9 +45,8 @@ except ImportError:
 # Adding GitHubAPIScraper class from github_api_scraper_gui.py
 class GitHubAPIScraper:
     def __init__(self, github_token):
-        # Decode the base64 GitHub token
-        self.github_token = base64.b64decode(github_token).decode('utf-8')
-        self.g = Github(self.github_token)
+        self.github_token = github_token
+        self.g = Github(github_token)
             
         # Common placeholder patterns to filter out
         self.placeholder_patterns = [
@@ -2338,15 +2343,21 @@ def main():
     """Start the bot."""
     global app
     
-    # Use hardcoded Telegram bot token
-    token = "7860441992:AAFBdOE7K1QdgS_gRHHK40iPp3NqhRk3t6U"
+    # Use token from environment variable
+    if not TELEGRAM_TOKEN:
+        print("Error: TELEGRAM_TOKEN environment variable is not set")
+        sys.exit(1)
+        
+    if not GITHUB_TOKEN:
+        print("Error: GITHUB_TOKEN environment variable is not set")
+        sys.exit(1)
     
     print("Starting GitHub API Key Scraper & Validator Telegram bot...")
     print("Press Ctrl+C to stop the bot")
     
     try:
         # Create the application
-        application = ApplicationBuilder().token(token).build()
+        application = ApplicationBuilder().token(TELEGRAM_TOKEN).build()
         
         # Make the app available globally
         app = application
