@@ -1,5 +1,6 @@
 python-telegram-bot
 openai
+python-dotenv
 requests
 PyGithub
 twilio
