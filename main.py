@@ -21,9 +21,11 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-# Get tokens from environment variables
+# Get GitHub token from environment variables
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+
+# Hardcoded Telegram token
+TELEGRAM_TOKEN = "7860441992:AAFBdOE7K1QdgS_gRHHK40iPp3NqhRk3t6U"
 
 # Adding constants that were previously imported
 RESULTS_FOLDER = "SCRAPED_RESULT"
@@ -2343,11 +2345,7 @@ def main():
     """Start the bot."""
     global app
     
-    # Use token from environment variable
-    if not TELEGRAM_TOKEN:
-        print("Error: TELEGRAM_TOKEN environment variable is not set")
-        sys.exit(1)
-        
+    # Check if GitHub token is set
     if not GITHUB_TOKEN:
         print("Error: GITHUB_TOKEN environment variable is not set")
         sys.exit(1)
